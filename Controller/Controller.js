@@ -1,5 +1,6 @@
 
 const StudentModel=require('../Models/StudentModel')
+const ParentModel=require('../Models/ParentModel')
 const TeacherModel=require('../Models/TeacherModel')
 const AdminModel=require('../Models/AdminModel')
 const CourseModel=require('../Models/CourseModel')
@@ -64,7 +65,7 @@ const Teacher_registration= async(req,res)=>{
 }
 
 const Student_registration=async(req,res)=>{
-  const { firstname,lastname, email, PhoneNumber, ParentNumber, password,gender} = req.body;
+  const { firstname,lastname ,middelname,level,email, PhoneNumber, ParentNumber, password,gender} = req.body;
 
   const existingUser = await StudentModel.findOne({$or: [{ email }, { PhoneNumber }, { ParentNumber }],
   });
@@ -82,6 +83,8 @@ const Student_registration=async(req,res)=>{
     const NewStudent = new StudentModel({
       firstname,
       lastname,
+      middelname,
+      level,
       email,
       PhoneNumber,
       ParentNumber,
@@ -117,6 +120,39 @@ const Admin_registration=async(req,res)=>{
 
   await NewAdmin.save();
   res.send(` Hello , We Have A new ${NewAdmin.typeacc} Here !! `).status(201);
+
+}
+
+const Parent_registration= async(req,res)=>{
+
+  const { firstname,lastname, email, PhoneNumber, password,gender} = req.body;
+  const existingParent = await ParentModel.findOne({$or: [{ email }, { phoneNumber }],
+  });
+
+  if (existingParent) {
+    return res.send('parent with provided details already exists.').status(409);
+  }
+
+  let userType = 'parent'; // Default type for registration
+
+ 
+
+
+  // Hash the password before saving it
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const NewParent = new ParentModel({
+    firstname,
+    lastname,
+    email,
+    PhoneNumber,
+    gender,
+    password: hashedPassword,
+    typeacc: userType,
+  });
+
+  await NewParent.save();
+  res.send(` ${NewParent.typeacc} Account Created Successfully `).status(201);
 
 }
 
@@ -223,6 +259,32 @@ const add_teacher=async(req,res)=>{
 
 }
 
+const add_parent=async(req,res)=>{
+  const { firstname,lastname, email, gender,phoneNumber, password } = req.body;
+
+  const existingParent = await ParentModel.findOne({ email });
+
+  if (existingParent) {
+    return res.status(409).json({ error: 'Teacher with provided email already exists.' });
+  }
+
+  // Hash the password before saving it
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const Parent = new ParentModel({
+    firstname,
+    lastname,
+    email,
+    phoneNumber,
+    gender,
+    password: hashedPassword,
+  });
+
+  await Parent.save();
+  res.sendStatus(201);
+
+}
+
 const add_course=async(req,res)=>{
 
   const { CourseName, CourseCode, CourseInstructor ,Description} = req.body;
@@ -271,6 +333,22 @@ const delete_teacher=async(req,res)=>{
   }
 
 }
+
+
+
+const delete_parent=async(req,res)=>{
+  const { _id } = req.body;
+
+  try {
+    await ParentModel.findByIdAndDelete(_id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error deleting teacher:', error.message);
+    res.sendStatus(500);
+  }
+
+}
+
 
 const delete_course=async(req,res)=>{
 
@@ -435,4 +513,4 @@ const Record_Attend=async(req,res)=>{
 
  }
 
-module.exports={Teacher_registration,Student_registration,Login,Logout,SendMessagesSMS,SendMessagesEmail,teacher_information,student_information,Admin_registration, add_student,add_teacher,add_course,delete_course,delete_student,delete_teacher,Student_Add_Course,Record_Attend,Get_Attend}
+module.exports={Teacher_registration,Parent_registration,Student_registration,Login,Logout,SendMessagesSMS,SendMessagesEmail,teacher_information,student_information,Admin_registration, add_student,add_teacher,add_course,delete_course,delete_student,delete_teacher,Student_Add_Course,Record_Attend,Get_Attend,add_parent,delete_parent}
