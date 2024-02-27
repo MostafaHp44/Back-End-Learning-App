@@ -14,6 +14,14 @@ var validateEmail = (email)=> {
         maxlength:30,
 
     },
+
+    middelname: {
+        type:String,
+        required:true,
+        minlength:5,
+        maxlength:30,
+
+    },
     
    lastname: {
         type:String,
@@ -22,12 +30,14 @@ var validateEmail = (email)=> {
         maxlength:30,
 
     },
+
     gender: {
         type:String,
         enum: ['male', 'female'],
         required: true
 
     },
+
     email:{   
         type:String,
         required: 'Email address is required',
@@ -35,16 +45,24 @@ var validateEmail = (email)=> {
         unique: true,
         validate: [validateEmail, 'Please fill a valid email address'],
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
-},
+   },
+
     PhoneNumber:{
         type:String,
         required: 'Phone Number  is required',
-},
+  },
+
+  
+  level:{
+    type:String
+  },
+
     ParentNumber:{
         type:String,// Only for Student
         required: 'Phone Number  is required',
         
 }, 
+
     password:{
         type:String,
         },
