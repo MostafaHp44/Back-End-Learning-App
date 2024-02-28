@@ -33,7 +33,7 @@ const emailMessage = 'Dear user, please download our educational app.';
 
 const Teacher_registration= async(req,res)=>{
 
-    const { firstname,lastname, email, phone, password,subjects} = req.body;
+    const { firstname,lastname, email, phone, password,subjects,gender} = req.body;
     const existingUser = await TeacherModel.findOne({$or: [{ email }, { phoneNumber }],
     });
   
@@ -55,6 +55,7 @@ const Teacher_registration= async(req,res)=>{
       email,
       phone,
       subjects,
+      gender,
       password: hashedPassword,
       typeacc: userType,
     });
