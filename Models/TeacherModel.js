@@ -10,16 +10,22 @@ const TeacherSchema= new mongoose.Schema({
     firstname: {
         type:String,
         required:true,
-        minlength:5,
-        maxlength:30,
+       
 
     },
    lastname: {
         type:String,
         required:true,
-        minlength:5,
-        maxlength:30,
+       
     },
+
+    gender: {
+        type:String,
+        enum: ['male', 'female'],
+        required: true
+
+    },
+    
     email:{   
         type:String,
         required: 'Email address is required',
